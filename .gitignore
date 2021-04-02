@@ -1,0 +1,8 @@
+data/
+dependencies/
+logs/
+.vscode/
+session.token
+device.json
+node_modules/
+bin/
