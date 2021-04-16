@@ -4,5 +4,6 @@ logs/
 .vscode/
 session.token
 device.json
+password.encrypt
 node_modules/
 bin/

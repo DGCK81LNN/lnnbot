@@ -1,7 +1,7 @@
 {
     "dependencies": {
-        "koishi": "^3.6.0",
-        "koishi-adapter-onebot": "^3.0.4",
-        "koishi-plugin-common": "^4.2.0"
+        "koishi": "^3.9.0",
+        "koishi-adapter-onebot": "^3.0.7",
+        "koishi-plugin-common": "^4.2.2"
     }
 }
