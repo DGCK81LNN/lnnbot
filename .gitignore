@@ -1,7 +1,7 @@
 data/
 dependencies/
 logs/
-.vscode/
+.vscode/tasks.json
 session.token
 device.json
 password.encrypt

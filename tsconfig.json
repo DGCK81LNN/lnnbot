@@ -5,6 +5,6 @@
         "outDir": "bin"
     },
     "files": [
-        "demo-plugin.ts"
+        "src/index.ts"
     ]
 }
