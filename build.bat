@@ -1,1 +1,0 @@
-%npmpath%\tsc
