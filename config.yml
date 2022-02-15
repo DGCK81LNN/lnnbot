@@ -17,7 +17,7 @@ heartbeat:
 
 message:
   post-format: string
-  ignore-invalid-cqcode: false
+  ignore-invalid-cqcode: true
   force-fragment: false
   fix-url: false
   proxy-rewrite: ''

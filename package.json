@@ -1,7 +1,13 @@
 {
-    "dependencies": {
-        "koishi": "^3.9.0",
-        "koishi-adapter-onebot": "^3.0.7",
-        "koishi-plugin-common": "^4.2.2"
-    }
+  "dependencies": {
+    "@koishijs/plugin-adapter-onebot": "^4.0.2",
+    "@koishijs/plugin-database-memory": "^1.0.1",
+    "@koishijs/plugin-echo": "^1.0.1",
+    "@koishijs/plugin-recall": "^1.0.2",
+    "@koishijs/plugin-repeater": "^1.0.0",
+    "@koishijs/plugin-respondent": "^5.0.0",
+    "@koishijs/plugin-verifier": "^1.0.0",
+    "koishi": "^4.2.0",
+    "node-fetch": "^3.2.0"
+  }
 }

@@ -7,3 +7,4 @@ device.json
 password.encrypt
 node_modules/
 bin/
+.koishi/
