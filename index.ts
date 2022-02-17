@@ -1,5 +1,6 @@
 #! /usr/bin/env ts-node
 import { App, Session } from "koishi"
+import * as LNNBot from "./src/index"
 
 const app = new App({
   port: 8080,
@@ -46,6 +47,12 @@ app.plugin("verifier", {
         `已${returnValue ? "同意" : "忽略"}。`
     )
     return returnValue
+  },
+})
+app.plugin(LNNBot, {
+  lifecycle: {
+    notifyOnOnline: ["private:3470524928"],
+    notifyBeforeExit: ["private:3470524928"],
   },
 })
 
