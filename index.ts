@@ -1,12 +1,13 @@
 #! /usr/bin/env ts-node
-
 import { App, Session } from "koishi"
 
 const app = new App({
   port: 8080,
-  nickname: "LNNBot", // Hey, Siri
-  autoAssign: ses => (ses as any).channelId === '805872268',
-  autoAuthorize: ses => (ses as any).userId === '3470524928' ? 4 : (ses as any).groupId ? 1 : 0,
+  nickname: "LNNBot",
+  autoAuthorize: ses => {
+    if ((ses as any).userId === '3470524928') return 4
+    return 1
+  },
 })
 
 app.plugin("adapter-onebot", {
@@ -18,12 +19,16 @@ app.plugin("adapter-onebot", {
 
 app.plugin("database-memory", { storage: true })
 
+app.plugin("admin")
+app.plugin("callme")
 app.plugin("echo")
 app.plugin("recall")
 app.plugin("repeater", {
   onRepeat: { minTimes: 3 },
 })
 app.plugin("respondent", [{ match: /lnnbot/i, reply: "啦啦啦" }])
+app.plugin("schedule")
+app.plugin("teach")
 app.plugin("verifier", {
   onFriendRequest: true,
   onGuildMemberRequest: async (session: Session) => {
