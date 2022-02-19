@@ -21,7 +21,7 @@ export function apply(cxt: Context, config?: Config) {
     })
   }
 
-  cxt.command("exit [status:number]", "关机", {
+  cxt.command("exit [status:integer]", "关机", {
       authority: 4,
     })
     .action(async ({ session: { bot } }, status = 0) => {
