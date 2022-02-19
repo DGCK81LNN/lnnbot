@@ -5,7 +5,7 @@ account:
   encrypt: true
   status: 0
   relogin:
-    disabled: true
+    disabled: false
     delay: 3
     interval: 0
     max-times: 0
