@@ -4,7 +4,7 @@ import * as LNNBot from "./src/index"
 
 const app = new App({
   port: 8080,
-  nickname: "LNNBot",
+  nickname: ["LNNBot", "lnnbot"],
   autoAuthorize: ses => {
     if ((ses as any).userId === '3470524928') return 4
     return 1
