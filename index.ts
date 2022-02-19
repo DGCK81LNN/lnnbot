@@ -1,5 +1,6 @@
 #! /usr/bin/env ts-node
-import { App, Session, template } from "koishi"
+import { App, Session, segment, template } from "koishi"
+import { resolve as pathResolve } from "path"
 import * as LNNBot from "./src/index"
 
 const app = new App({
@@ -26,7 +27,18 @@ app.plugin("callme")
 app.plugin("echo")
 app.plugin("recall")
 app.plugin("repeater", {
-  onRepeat: { minTimes: 3 },
+  onRepeat: ({ times, content }: { times: number, content: string }) => {
+    if (times >= 3) {
+      if (Math.random() < 1 / Math.log(times)) {
+        if (Math.random() < 1 / (times - 2))
+          return content
+      } else {
+        return segment("image", {
+          url: `file://${pathResolve("./lnnbot-assets/noplusone.jpg")}`
+        })
+      }
+    }
+  },
 })
 app.plugin("respondent", [{ match: /lnnbot/i, reply: "啦啦啦" }])
 app.plugin("schedule")

@@ -8,3 +8,4 @@ password.encrypt
 node_modules/
 bin/
 .koishi/
+.lnnbot_cache/
