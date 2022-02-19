@@ -1,6 +1,12 @@
-import { Context } from "koishi"
+import { Context, template } from "koishi"
 
 export const name = "lnnbot-lifecycle"
+
+template.set(name, {
+  'on-online': '机器人开机',
+  'before-exit': '机器人关机',
+})
+
 export type Config = {
   notifyOnOnline?: string[],
   notifyBeforeExit?: string[],
@@ -10,7 +16,7 @@ export function apply(cxt: Context, config?: Config) {
     let rm = cxt.on("bot-status-updated", bot => {
       if (bot.status === "online") {
         rm()
-        bot.broadcast(config.notifyOnOnline, "机器人开机")
+        bot.broadcast(config.notifyOnOnline, template("lnnbot-lifecycle.on-online"))
       }
     })
   }
@@ -20,7 +26,7 @@ export function apply(cxt: Context, config?: Config) {
     })
     .action(async ({ session: { bot } }, status = 0) => {
       if (config?.notifyBeforeExit) {
-        bot.broadcast(config.notifyBeforeExit, "机器人关机")
+        bot.broadcast(config.notifyBeforeExit, template("lnnbot-lifecycle.before-exit"))
       }
       await cxt.app.stop()
       process.exit(status)
