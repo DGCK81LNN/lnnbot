@@ -1,4 +1,7 @@
 {
+  "general": {
+    "name": "真魂语言包"
+  },
   "internal": {
     "low-authority": "不行不行，你的权限不够呢……（？",
     "insufficient-arguments": "你给的参数不够呢，要不看看帮助……？",
@@ -13,43 +16,78 @@
     "invalid-natural": "应该是个自然数呢。",
     "invalid-date": "应该是个时刻呢。",
     "invalid-user": "应该是个用户ID呢。",
-    "invalid-channel": "应该是个群ID呢。",
-    "suggestion": "你说的是不是 {0} 啊……？",
-    "command-suggestion-prefix": "",
-    "command-suggestion-suffix": "是的话就发个句号吧。",
-    "help-suggestion-prefix": "额，好像没有这个指令呢。",
-    "help-suggestion-suffix": "是的话就发个句号吧。",
-    "subcommand-prolog": "可用的子指令有这些：{0}",
-    "global-help-prolog": "嗯嗯，可用的指令有：{0}",
-    "global-help-epilog": "要看某个指令的详细用法的话，就输入“帮助 指令名”吧。",
-    "available-options": "可用的选项有这些：",
-    "available-options-with-authority": "可用的选项有这些：（括号内是额外要求的权限等级）",
-    "hint-authority": "括号里是需要的权限等级",
-    "hint-subcommand": "标星号的指令还有子指令",
-    "command-alias": "输入 {0} 也可以使用这个指令。",
-    "command-examples": "比如你可以这样用，",
-    "command-authority": "需要 {0} 极权限才能使用。"
-  },
-  "common": {
+    "invalid-channel": "应该是个频道ID呢。",
     "error-encountered": "诶……？出错了……"
   },
+  "suggest": {
+    "hint": "你说的是不是 {0} 啊……？",
+    "command-prefix": "",
+    "command-suffix": "是的话就发个句号吧。",
+    "help-prefix": "额，好像没有这个指令呢。",
+    "help-suffix": "是的话就发个句号吧。"
+  },
+  "commands": {
+    "help": {
+      "options": {
+        "help": "显示此帮助信息",
+        "authority": "显示需要的权限等级"
+      },
+      "messages": {
+        "hint-authority": "括号里是需要的权限等级",
+        "hint-subcommand": "标星号的指令还有子指令",
+        "command-aliases": "输入 {0} 也可以使用这个指令。",
+        "command-examples": "比如你可以这样用，",
+        "command-authority": "需要 {0} 极权限才能使用。",
+        "subcommand-prolog": "可用的子指令有这些：{0}",
+        "global-prolog": "嗯嗯，可用的指令有：{0}",
+        "global-epilog": "要看某个指令的详细用法的话，就输入“帮助 指令名”吧。",
+        "available-options": "可用的选项有这些：",
+        "available-options-with-authority": "可用的选项有这些：（括号内是额外要求的权限等级）"
+      }
+    },
+    "broadcast": {
+      "messages": {
+        "expect-text": "额，你让我说的是什么啊……？"
+      }
+    },
+    "echo": {
+      "description": "发送消息",
+      "messages": {
+        "expect-text": "额，你让我说的是什么啊……？",
+        "platform-not-found": "我好像没有这个平台的账户呢……"
+      }
+    },
+    "user.locale": {
+      "description": "设置语言"
+    },
+    "user.flag": {
+      "description": "设置标记"
+    },
+    "channel.locale": {
+      "description": "设置语言"
+    },
+    "channel.flag": {
+      "description": "设置标记"
+    }
+  },
   "admin": {
+    "user-option": "指定目标用户",
     "user-not-found": "我好像没有见过这个用户呢……",
     "user-unchanged": "不用改了，已经是这样了呢。",
     "user-updated": "嗯嗯，改好了。",
-    "channel-not-found": "我好像不知道这个群呢……",
+    "channel-option": "指定目标频道",
+    "channel-not-found": "我好像不知道这个频道呢……",
     "channel-unchanged": "不用改了，已经是这样了呢。",
     "channel-updated": "嗯嗯，改好了。",
-    "not-in-group": "额，不知道你说的是哪个群啊……？",
+    "not-in-group": "额，不知道你说的是哪个频道啊……？",
     "unknown-flag": "好像没有 {0} 这个标记呢。",
     "all-flags": "标记有这些：{0}。",
     "no-flags": "一个标记都没有呢。",
     "current-flags": "当前的标记是 {0}。",
     "user-expected": "额……你要设置的用户是谁啊？",
-    "invalid-assignee-platform": "啊……？机器人只能代理同一个平台上的群哦……"
-  },
-  "broadcast": {
-    "expect-text": "额，你让我说的是什么啊……？"
+    "invalid-assignee-platform": "啊……？机器人只能代理同一个平台上的频道哦……",
+    "current-locale": "当前设置的语言是 {0}。",
+    "no-locale": "当前设置的是默认语言。"
   },
   "callme": {
     "current": "你好呀，{0}！",
@@ -60,10 +98,6 @@
     "duplicate": "额……这个名字跟别人重复了呢……",
     "updated": "嗯嗯，{0}，我记住了！",
     "failed": "诶……？出错了……"
-  },
-  "echo": {
-    "expect-text": "额，你让我说的是什么啊……？",
-    "platform-not-found": "我好像没有这个平台的账户呢……"
   },
   "switch": {
     "forbdden": "不行不行，你不能修改 {0} 功能……",
@@ -79,8 +113,9 @@
     "probable-modify-answer": "额，你要修改的是不是回答啊？要修改回答的话就发个句号，如果确实要修改问题就加上 -I 选项吧。",
     "probable-regexp": "额，你要{0}的问题是不是正则表达式啊？要{0}正则的话就发个句号，如果确实不是正则就加上 -I 选项吧。"
   },
-  "lnnbot-lifecycle": {
-    "on-online": "开机了~",
-    "before-exit": "关机了~"
+  "daemon": {
+    "exiting": "关机了……",
+    "restarting": "稍等……",
+    "restarted": "我回来啦。"
   }
 }
