@@ -1,11 +1,5 @@
-data/
-dependencies/
-logs/
-.vscode/tasks.json
-session.token
-device.json
-password.encrypt
 node_modules/
 bin/
 .koishi/
 .lnnbot_cache/
+.vscode/

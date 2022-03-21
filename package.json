@@ -1,4 +1,24 @@
 {
+  "private": true,
+  "workspaces": [
+    "plugins/*"
+  ],
+  "scripts": {
+    "build": "koishi-scripts build",
+    "bump": "koishi-scripts bump",
+    "clean": "koishi-scripts clean",
+    "dep": "koishi-scripts dep",
+    "new": "koishi-scripts new",
+    "pub": "koishi-scripts pub",
+    "dev": "cross-env NODE_ENV=development koishi start -r ts-node/register --watch",
+    "start": "koishi start"
+  },
+  "devDependencies": {
+    "@koishijs/cli": "^4.4.2",
+    "@koishijs/scripts": "^1.2.3",
+    "cross-env": "^7.0.3",
+    "ts-node": "^10.7.0"
+  },
   "dependencies": {
     "@koishijs/plugin-adapter-onebot": "^4.1.5",
     "@koishijs/plugin-admin": "^1.1.1",
@@ -6,10 +26,13 @@
     "@koishijs/plugin-callme": "^1.0.2",
     "@koishijs/plugin-database-memory": "^1.0.2",
     "@koishijs/plugin-echo": "^1.1.0",
+    "@koishijs/plugin-locales": "^1.0.0",
     "@koishijs/plugin-recall": "^1.1.0",
     "@koishijs/plugin-repeater": "^1.0.1",
     "@koishijs/plugin-respondent": "^5.0.0",
     "@koishijs/plugin-schedule": "^4.1.0",
+    "@koishijs/plugin-status": "^5.3.4",
+    "@koishijs/plugin-sudo": "^1.1.0",
     "@koishijs/plugin-switch": "^1.0.1",
     "@koishijs/plugin-teach": "^3.1.3",
     "@koishijs/plugin-verifier": "^1.0.2",

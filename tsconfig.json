@@ -1,10 +1,11 @@
 {
-    "compilerOptions": {
-        "noImplicitAny": true,
-        "esModuleInterop": true,
-        "outDir": "bin"
-    },
-    "files": [
-        "src/index.ts"
-    ]
+  "compilerOptions": {
+      "noImplicitAny": true,
+      "esModuleInterop": true,
+      "outDir": "dist",
+      "resolveJsonModule": true
+  },
+  "files": [
+    "plugins/index.ts"
+  ]
 }
