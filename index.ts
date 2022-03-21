@@ -34,7 +34,7 @@ app.plugin("repeater", {
           return content
       } else {
         return segment("image", {
-          url: `file://${pathResolve("./lnnbot-assets/noplusone.jpg")}`
+          url: `file://${pathResolve("./lnnbot_assets/noplusone.jpg")}`
         })
       }
     }
