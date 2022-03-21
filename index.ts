@@ -40,7 +40,7 @@ app.plugin("repeater", {
     }
   },
 })
-app.plugin("respondent", [{ match: /lnnbot/i, reply: "啦啦啦" }])
+app.plugin("respondent", [{ match: /lnnbot\?/i, reply: "啦啦啦" }])
 app.plugin("schedule")
 app.plugin("switch")
 app.plugin("teach")
@@ -71,7 +71,7 @@ app.plugin(LNNBot, {
 })
 
 template.set('internal', {
-  'low-authority': '不行不行，这种事情只能听高级用户的呢……（？',
+  'low-authority': '不行不行，你的权限不够呢……（？',
   'insufficient-arguments': '你给的参数不够呢，要不看看帮助……？',
   'redundant-arguments': '你给的参数太多了呢，要不看看帮助……？',
   'invalid-argument': '你给的 {0} 参数有点问题，{1}',
