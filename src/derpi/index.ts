@@ -12,7 +12,7 @@ export function apply(cxt: Context, config: Config = { }) {
   cxt
     .command("derpi <id:natural>", "获取呆站图片")
     .action(async (_argv, id) => {
-      var outPath = path.resolve(`./.lnnbot_cache/${id}.image`)
+      var outPath = path.resolve(`./.lnnbot_cache/${id}`)
 
       try {
         await fs.promises.lstat(outPath)
