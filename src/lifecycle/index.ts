@@ -3,8 +3,8 @@ import { Context, template } from "koishi"
 export const name = "lnnbot-lifecycle"
 
 template.set(name, {
-  'on-online': '机器人开机',
-  'before-exit': '机器人关机',
+  "on-online": "机器人开机",
+  "before-exit": "机器人关机",
 })
 
 export type Config = {
@@ -21,9 +21,7 @@ export function apply(cxt: Context, config?: Config) {
     })
   }
 
-  cxt.command("exit [status:integer]", "关机", {
-      authority: 4,
-    })
+  cxt.command("exit [status:integer]", "关机", { authority: 4 })
     .action(async ({ session: { bot } }, status = 0) => {
       if (config?.notifyBeforeExit) {
         bot.broadcast(config.notifyBeforeExit, template("lnnbot-lifecycle.before-exit"))
