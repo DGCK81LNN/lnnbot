@@ -1,19 +1,26 @@
+import { App, Plugin, segment } from "koishi"
+import { resolve as pathResolve } from "path"
+
+type AppConfig = App.Config & { plugins: { [s: string]: any } }
 module.exports = {
   port: 8080,
   nickname: ["LNNBot", "lnnbot"],
   autoAuthorize: 1,
   exitCommand: true,
+  locale: "$souls",
   plugins: {
     "adapter-onebot": {
       secret: "LlLlSoul",
       token: "SoulLlLl",
       endpoint: "ws://localhost:6700",
       selfId: "2748080608",
-    },
+    } as import("@koishijs/plugin-adapter-onebot").BotConfig,
     "admin": {},
     "broadcast": {},
     "callme": {},
-    "database-memory": { storage: true },
+    "database-memory": {
+      storage: true,
+    } as import("@koishijs/plugin-database-memory/lib/storage").Config,
     "echo": {},
     "locales": {},
     "recall": {},
@@ -29,8 +36,10 @@ module.exports = {
           }
         }
       },
-    },
-    "respondent": [{ match: /lnnbot\?/i, reply: "啦啦啦" }],
+    } as import("@koishijs/plugin-repeater").Config,
+    "respondent": [
+      { match: /lnnbot\?/i, reply: "啦啦啦" },
+    ] as import("@koishijs/plugin-respondent").Config,
     "schedule": {},
     "sudo": {},
     "switch": {},
@@ -53,10 +62,10 @@ module.exports = {
         )
         return returnValue
       },
-    },
+    } as import("@koishijs/plugin-verifier").Config,
     "./plugins": {
       derpi: {
       },
-    }
+    } as import("./plugins").Config,
   },
-}
+} as AppConfig
