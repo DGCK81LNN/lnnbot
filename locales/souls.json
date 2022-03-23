@@ -4,12 +4,12 @@
   },
   "internal": {
     "low-authority": "不行不行，你的权限不够呢……（？",
-    "insufficient-arguments": "你给的参数不够呢，要不看看帮助……？",
-    "redundant-arguments": "你给的参数太多了呢，要不看看帮助……？",
+    "insufficient-arguments": "你给的参数不够呢。如果不知道怎么用的话，就输入“帮助 指令名”吧。",
+    "redundant-arguments": "你给的参数太多了呢。如果不知道怎么用的话，就输入“帮助 指令名”吧。",
     "invalid-argument": "你给的 {0} 参数有点问题，{1}",
-    "unknown-option": "额，好像没有 {0} 这个选项呢，要不看看帮助……？",
+    "unknown-option": "额，好像没有 {0} 这个选项呢。如果不知道怎么用的话，就输入“帮助 指令名”吧。",
     "invalid-option": "你给的 {0} 选项有点问题，{1}",
-    "check-syntax": "额，我没看懂，要不你看看帮助……？",
+    "check-syntax": "我没看懂……如果不知道怎么用的话，就输入“帮助 指令名”吧。",
     "invalid-number": "应该是个数字呢。",
     "invalid-integer": "应该是个整数呢。",
     "invalid-posint": "应该是个正整数呢。",
@@ -17,7 +17,7 @@
     "invalid-date": "应该是个时刻呢。",
     "invalid-user": "应该是个用户ID呢。",
     "invalid-channel": "应该是个频道ID呢。",
-    "error-encountered": "诶……？出错了……"
+    "error-encountered": "诶？出错了……"
   },
   "suggest": {
     "hint": "你说的是不是 {0} 啊……？",
