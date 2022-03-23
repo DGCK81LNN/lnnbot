@@ -68,6 +68,12 @@
     },
     "channel.flag": {
       "description": "设置标记"
+    },
+    "derpi": {
+      "messages": {
+        "metadata-error": "诶……？加载图片信息的时候出问题了……",
+        "image-error": "诶……？加载图片的时候出问题了……"
+      }
     }
   },
   "admin": {
