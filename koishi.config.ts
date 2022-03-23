@@ -1,4 +1,4 @@
-import { App, Plugin, segment } from "koishi"
+import { App, segment } from "koishi"
 import { resolve as pathResolve } from "path"
 
 type AppConfig = App.Config & { plugins: { [s: string]: any } }
@@ -10,8 +10,6 @@ module.exports = {
   locale: "$souls",
   plugins: {
     "adapter-onebot": {
-      secret: "LlLlSoul",
-      token: "SoulLlLl",
       endpoint: "ws://localhost:6700",
       selfId: "2748080608",
     } as import("@koishijs/plugin-adapter-onebot").BotConfig,
