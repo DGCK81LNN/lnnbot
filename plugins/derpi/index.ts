@@ -1,4 +1,5 @@
-import { Context, Session, segment, Argv } from "koishi"
+import { Context, segment, Argv } from "koishi"
+import ErrorWrapper from "../error-wrapper"
 import fs from "fs"
 import Stream from "stream"
 import path from "path"
@@ -19,7 +20,7 @@ declare module "koishi" {
   }
 }
 
-async function loadImage(session: Session, id: number, outPath: string) {
+async function loadImage(id: number, outPath: string): Promise<ErrorWrapper | void> {
   try {
     await fs.promises.lstat(outPath)
     return
@@ -30,7 +31,7 @@ async function loadImage(session: Session, id: number, outPath: string) {
   try {
     var metaResponse = await axios.get(`https://derpibooru.org/api/v1/json/images/${id}`)
   } catch (err) {
-    throw session.text(".metadata-error")
+    return { message: [".metadata-error"], error: err }
   }
   var meta = metaResponse.data.image
 
@@ -39,7 +40,7 @@ async function loadImage(session: Session, id: number, outPath: string) {
       responseType: "stream",
     })
   } catch (err) {
-    throw session.text(".image-error")
+    return { message: [".image-error"], error: err }
   }
 
   var imgStream = imgResponse.data
@@ -47,6 +48,8 @@ async function loadImage(session: Session, id: number, outPath: string) {
 }
 
 export function apply(ctx: Context, config: Config = {}) {
+  const logger = ctx.logger("lnnbot-derpi")
+
   ctx
     .command("derpi <id:natural>", {
       checkArgCount: true,
@@ -57,10 +60,14 @@ export function apply(ctx: Context, config: Config = {}) {
       var outPath = path.resolve(`./.lnnbot_cache/${id}`).replace(/^\//, "")
 
       try {
-        await loadImage(session, id, outPath)
+        var err = await loadImage(id, outPath)
       } catch (err) {
-        if (typeof err === "string") return err
-        throw err
+        logger.error(err)
+        return session.text("internal.error-encountered")
+      }
+      if (err) {
+        logger.warn(err.error)
+        return session.text(...err.message)
       }
 
       return (
