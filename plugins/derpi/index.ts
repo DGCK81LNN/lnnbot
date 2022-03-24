@@ -72,7 +72,7 @@ export function apply(ctx: Context, config: Config = {}) {
         await loadImage(id, outPath)
       } catch (err) {
         if (err instanceof ErrorWrapper) {
-          logger.warn(err.error)
+          if (err.error) logger.warn(err.error)
           return session.text(...err.message)
         }
         logger.error(err)
