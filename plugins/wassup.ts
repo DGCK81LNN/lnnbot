@@ -46,6 +46,7 @@ export function apply(ctx: Context, config?: Config) {
   config = Object.assign({}, defaultConfig, config)
 
   ctx.on("notice/poke", async session => {
+    if (session.guildId && session.targetId && session.targetId !== session.selfId) return
     await session.send(await pickMessage(session))
   })
 
