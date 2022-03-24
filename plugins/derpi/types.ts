@@ -2,8 +2,8 @@ export interface GetImageResponse {
   image: Image
 }
 
-export interface SearchImageResponse {
-  images: Image[]
+export interface SearchImagesResponse {
+  images: Image<false>[]
 }
 
 export type ImageMimeType =
