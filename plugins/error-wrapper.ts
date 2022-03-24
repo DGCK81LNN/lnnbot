@@ -1,6 +1,12 @@
 import { Session } from "koishi"
 
-export default interface ErrorWrapper {
+export type ErrorMessage = Parameters<typeof Session.prototype.text>
+
+export default class ErrorWrapper {
   error: Error
-  message: Parameters<typeof Session.prototype.text>
+  message: ErrorMessage
+  constructor(error: Error, message: ErrorMessage) {
+    this.error = error
+    this.message = message
+  }
 }

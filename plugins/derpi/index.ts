@@ -1,5 +1,6 @@
 import { Context, segment, Argv } from "koishi"
 import ErrorWrapper from "../error-wrapper"
+import { Image, GetImageResponse } from "./types"
 import fs from "fs"
 import Stream from "stream"
 import path from "path"
@@ -20,7 +21,18 @@ declare module "koishi" {
   }
 }
 
-async function loadImage(id: number, outPath: string): Promise<ErrorWrapper | void> {
+async function loadImageMetadata(id: number) {
+  var url = `https://derpibooru.org/api/v1/json/images/${id}`
+
+  try {
+    var metaResponse = await axios.get<GetImageResponse>(url)
+  } catch (err) {
+    throw new ErrorWrapper(err, [".metadata-error"])
+  }
+  return metaResponse.data.image
+}
+
+async function loadImage(id: number, outPath: string) {
   try {
     await fs.promises.lstat(outPath)
     return
@@ -28,19 +40,16 @@ async function loadImage(id: number, outPath: string): Promise<ErrorWrapper | vo
 
   await fs.promises.mkdir(path.dirname(outPath), { recursive: true })
 
-  try {
-    var metaResponse = await axios.get(`https://derpibooru.org/api/v1/json/images/${id}`)
-  } catch (err) {
-    return { message: [".metadata-error"], error: err }
-  }
-  var meta = metaResponse.data.image
+  var meta = await loadImageMetadata(id)
+  if (meta.hidden_from_users === true) throw new ErrorWrapper(null, [".is-removed"])
+  if (meta.mime_type.startsWith("video/")) throw new ErrorWrapper(null, [".is-video"])
 
   try {
-    var imgResponse = await axios.get(meta.representations["small"], {
+    var imgResponse = await axios.get(meta.representations.small, {
       responseType: "stream",
     })
   } catch (err) {
-    return { message: [".image-error"], error: err }
+    throw new ErrorWrapper(err, [".image-error"])
   }
 
   var imgStream = imgResponse.data
@@ -60,14 +69,14 @@ export function apply(ctx: Context, config: Config = {}) {
       var outPath = path.resolve(`./.lnnbot_cache/${id}`).replace(/^\//, "")
 
       try {
-        var err = await loadImage(id, outPath)
+        await loadImage(id, outPath)
       } catch (err) {
+        if (err instanceof ErrorWrapper) {
+          logger.warn(err.error)
+          return session.text(...err.message)
+        }
         logger.error(err)
         return session.text("internal.error-encountered")
-      }
-      if (err) {
-        logger.warn(err.error)
-        return session.text(...err.message)
       }
 
       return (
@@ -101,6 +110,8 @@ export function apply(ctx: Context, config: Config = {}) {
     messages: {
       "metadata-error": "加载图片信息失败。",
       "image-error": "加载图片失败。",
+      "is-removed": "该图片已被删除。",
+      "is-video": "不支持获取视频。",
     },
   })
 }
