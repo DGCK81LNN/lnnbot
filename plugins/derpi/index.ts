@@ -27,7 +27,7 @@ async function loadImageMetadata(id: number) {
   try {
     var metaResponse = await axios.get<GetImageResponse>(url)
   } catch (err) {
-    throw new ErrorWrapper(err, [".metadata-error"])
+    throw new ErrorWrapper([".metadata-error"], err)
   }
   return metaResponse.data.image
 }
@@ -41,15 +41,15 @@ async function loadImage(id: number, outPath: string) {
   await fs.promises.mkdir(path.dirname(outPath), { recursive: true })
 
   var meta = await loadImageMetadata(id)
-  if (meta.hidden_from_users === true) throw new ErrorWrapper(null, [".is-removed"])
-  if (meta.mime_type.startsWith("video/")) throw new ErrorWrapper(null, [".is-video"])
+  if (meta.hidden_from_users === true) throw new ErrorWrapper([".is-removed"])
+  if (meta.mime_type.startsWith("video/")) throw new ErrorWrapper([".is-video"])
 
   try {
     var imgResponse = await axios.get(meta.representations.small, {
       responseType: "stream",
     })
   } catch (err) {
-    throw new ErrorWrapper(err, [".image-error"])
+    throw new ErrorWrapper([".image-error"], err)
   }
 
   var imgStream = imgResponse.data
