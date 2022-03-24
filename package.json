@@ -4,18 +4,11 @@
     "plugins/*"
   ],
   "scripts": {
-    "build": "koishi-scripts build",
-    "bump": "koishi-scripts bump",
-    "clean": "koishi-scripts clean",
-    "dep": "koishi-scripts dep",
-    "new": "koishi-scripts new",
-    "pub": "koishi-scripts pub",
     "dev": "cross-env NODE_ENV=development koishi start -r ts-node/register --watch",
-    "start": "koishi start"
+    "start": "koishi start -r ts-node/register"
   },
   "devDependencies": {
     "@koishijs/cli": "^4.4.2",
-    "@koishijs/scripts": "^1.2.3",
     "cross-env": "^7.0.3",
     "ts-node": "^10.7.0"
   },
