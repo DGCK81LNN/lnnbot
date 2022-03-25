@@ -1,14 +1,21 @@
-import { Argv, Context, Logger, Session, segment } from "koishi"
+import { Argv, Context, Logger, Session, Time, segment } from "koishi"
 import { getRandomImage, LoadedImage, loadImage } from "./api"
 import ErrorWrapper from "../error-wrapper"
 
 export const name = "lnnbot-derpi"
 export interface Config {
-  filter_id?: number
+  /** 获取图片时使用的过滤器编号，默认为 191275。 */
+  filterId?: number
+  /** 收到请求后，延迟多长时间发送“请稍候”；单位为毫秒，默认为 5 秒。 */
+  holdOnTime?: number
+  /** 在指定时间内，同一频道内如果已经请求过图片，则不再发送“请稍候”；单位为毫秒，默认为 5 分钟。 */
+  omitHoldOnTimeout?: number
 }
 
 export const defaultConfig: Config = {
-  filter_id: 191275,
+  filterId: 191275,
+  holdOnTime: 5 * Time.second,
+  omitHoldOnTimeout: 5 * Time.minute,
 }
 
 export type DerpiRating = "s" | "su" | "q" | "e"
@@ -21,35 +28,40 @@ declare module "koishi" {
   }
 }
 
-async function sendImage(
-  session: Session,
-  logger: Logger,
-  promise: Promise<LoadedImage>
-) {
-  let holdOnHandle = setTimeout(() => { session.send(session.text(".hold-on")) }, 1000)
-
-  try {
-    var { id, outPath } = await promise
-  } catch (err) {
-    if (err instanceof ErrorWrapper) {
-      if (err.error) logger.warn(err.error)
-      return session.text(...err.message)
-    }
-    logger.error(err)
-    return session.text("internal.error-encountered")
-  }
-
-  clearTimeout(holdOnHandle)
-
-  return (
-    segment("image", { url: `file:///${outPath.replace(/^\//, "")}` }) +
-    `\nhttps://derpibooru.org/images/${id}`
-  )
-}
-
 export function apply(ctx: Context, config: Config = {}) {
   const logger = ctx.logger("lnnbot-derpi")
   config = Object.assign({}, defaultConfig, config)
+
+  var lastInvokeMap = new Map<string, number>()
+
+  async function sendImage(session: Session, promise: Promise<LoadedImage>) {
+    let lastInvoke = lastInvokeMap.get(session.channelId) ?? -Infinity
+    let now = Date.now()
+    let holdOnHandle: NodeJS.Timeout | null = null
+    if (now - lastInvoke > config.omitHoldOnTimeout)
+      holdOnHandle = setTimeout(() => {
+        session.send(session.text(".hold-on"))
+      }, config.holdOnTime)
+    lastInvokeMap.set(session.channelId, now)
+
+    try {
+      var { id, outPath } = await promise
+    } catch (err) {
+      if (err instanceof ErrorWrapper) {
+        if (err.error) logger.warn(err.error)
+        return session.text(...err.message)
+      }
+      logger.error(err)
+      return session.text("internal.error-encountered")
+    }
+
+    if (holdOnHandle !== null) clearTimeout(holdOnHandle)
+
+    return (
+      segment("image", { url: `file:///${outPath.replace(/^\//, "")}` }) +
+      `\nhttps://derpibooru.org/images/${id}`
+    )
+  }
 
   ctx
     .command("derpi <id:natural>", {
@@ -57,7 +69,7 @@ export function apply(ctx: Context, config: Config = {}) {
       checkUnknown: true,
       showWarning: true,
     })
-    .action(({ session }, id) => sendImage(session, logger, loadImage(id)))
+    .action(({ session }, id) => sendImage(session, loadImage(id)))
 
   Argv.createDomain("derpiRating", str => {
     if ("safe".startsWith(str)) return "s"
@@ -89,10 +101,13 @@ export function apply(ctx: Context, config: Config = {}) {
           ratingTags.push("-semi-grimdark", "-grimdark", "-grotesque")
       }
       query += "," + ratingTags.join(",")
-      return sendImage(session, logger, getRandomImage({
-        filter_id: config.filter_id,
-        q: query,
-      }))
+      return sendImage(
+        session,
+        getRandomImage({
+          filter_id: config.filterId,
+          q: query,
+        })
+      )
     })
 
   ctx.i18n.define("zh", "commands.derpi", {
