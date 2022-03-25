@@ -7,7 +7,7 @@ export interface Config {
 }
 
 async function pickMessage(session: Session) {
-  var { name } = await session.getUser(session.userId, ["name"])
+  var { name } = await session.observeUser(["name"])
 
   let messages: string[] = []
   {
@@ -45,12 +45,28 @@ export const defaultConfig: Config = {
 export function apply(ctx: Context, config?: Config) {
   config = Object.assign({}, defaultConfig, config)
 
+  var pokeTimesMap = new Map<string, number>()
+
   ctx.on("notice/poke", async session => {
     if (session.guildId && session.targetId && session.targetId !== session.selfId) return
-    await session.send(await pickMessage(session))
+
+    var times = (pokeTimesMap.get(session.cid) || 0) + 1
+    pokeTimesMap.set(session.cid, times)
+
+    // 戳自己目前只在群内有效
+    let pokeSelfProb = session.guildId && times > 6 ? 0.4 - 1 / (times - 3.5) : 0
+    let pokeOtherProb = times > 2 ? 0.8 - 1 / (times - 0.75) : 0
+    let rand = Math.random()
+
+    if (rand < pokeSelfProb) await session.send(segment("poke", { qq: session.selfId }))
+    else if (rand < pokeOtherProb) await session.send(segment("poke", { qq: session.userId }))
+    else await session.send(await pickMessage(session))
   })
 
   ctx.middleware(async (session, next) => {
+    if (ctx.bots.get(session.uid)) return
+    pokeTimesMap.delete(session.cid)
+
     if (
       isWindowShake(session) ||
       isPoke(session, config.acceptPokeMsgTypes) ||
