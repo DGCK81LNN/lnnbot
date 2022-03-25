@@ -86,6 +86,7 @@ export function apply(ctx: Context, config: Config = {}) {
       showWarning: true,
     })
     .option("rating", "-r <rating:derpiRating>", { fallback: "s" })
+    .shortcut("随机小马图", { args: ["pony"] })
     .shortcut("随机暮暮图", { args: ["ts,pony,solo"] })
     .action(({ session, options: { rating } }, query) => {
       var ratingTags = ["wilson_score.gte:0.93"]
