@@ -1,4 +1,4 @@
-import { Argv, Command, Context, Session, Time, segment } from "koishi"
+import { Argv, Context, Session, Time, escapeRegExp, segment } from "koishi"
 import { getRandomImage, LoadedImage, loadImage } from "./api"
 import ErrorWrapper from "../error-wrapper"
 
@@ -143,11 +143,10 @@ export function apply(ctx: Context, config: Config = {}) {
     .option("grotesq", "-G", { fallback: false })
 
   let randomShortcutsUsage = config.randomShortcuts.map(({ name, query, options }) => {
-    let nameArr = typeof name === "string" ? [name] : name
-
-    nameArr.forEach(name => {
-      cmdDerpiRandom.shortcut(`随机${name}图`, { args: [query], options })
-    })
+    let nameArr: string[] = typeof name === "string" ? [name] : name
+    let namesRe = nameArr.map(n => escapeRegExp(n)).join("|")
+    let regExp = new RegExp(`^随机(?:${namesRe})图$`, "i")
+    cmdDerpiRandom.shortcut(regExp, { args: [query], options })
 
     return `随机${nameArr.join("/")}图`
   })
