@@ -1,6 +1,7 @@
 import { Argv, Context, Session, Time, escapeRegExp, segment } from "koishi"
 import { getRandomImage, LoadedImage, loadImage } from "./api"
 import ErrorWrapper from "../error-wrapper"
+import { toFileURL } from "../utils"
 
 export const name = "lnnbot-derpi"
 export interface Config {
@@ -107,7 +108,7 @@ export function apply(ctx: Context, config: Config = {}) {
     if (holdOnHandle !== null) clearTimeout(holdOnHandle)
 
     return (
-      segment("image", { url: `file:///${outPath.replace(/^\//, "")}` }) +
+      segment("image", { url: toFileURL(outPath) }) +
       `\nhttps://derpibooru.org/images/${id}`
     )
   }
