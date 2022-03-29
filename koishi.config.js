@@ -1,7 +1,7 @@
 const { segment } = require("koishi")
 const path = require("path")
 
-require("yaml-register").register()
+require("yaml-register").register() // XD
 
 /** @type {import("koishi").Config & { plugins: { [s: string]: any } }} */
 module.exports = {
