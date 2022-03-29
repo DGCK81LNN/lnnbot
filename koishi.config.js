@@ -1,5 +1,5 @@
 const { segment } = require("koishi")
-const path = require("path")
+const { toFileURL } = require("./plugins/utils")
 
 require("yaml-register").register() // XD
 
@@ -29,12 +29,15 @@ module.exports = {
     /** @type {import("@koishijs/plugin-repeater").Config} */
     "repeater": {
       onRepeat: ({ times, content }) => {
+        if (times === 2 && Math.random() < 0.0646) return content
         if (times >= 3) {
-          if (Math.random() < 1 / Math.log(times)) {
-            if (Math.random() < 1 / (times - 2)) return content
-          } else {
+          let rand = Math.random()
+          if (rand < 1 / (times - 2)) {
+            return content
+          } else if (rand >= 1 / times + 0.75) {
             return segment("image", {
-              url: `file://${path.resolve("./assets/noplusone.jpg")}`,
+              url: toFileURL("./assets/noplusone.jpg"),
+              subType: 1,
             })
           }
         }
@@ -51,7 +54,7 @@ module.exports = {
     /** @type {import("@koishijs/plugin-verifier").Config} */
     "verifier": {
       onFriendRequest: true,
-      onGuildMemberRequest: async (session) => {
+      onGuildMemberRequest: async session => {
         var returnValue = undefined
         if (
           session.channelId === "773864545" &&
