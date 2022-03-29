@@ -1,0 +1,93 @@
+---
+general:
+  name: 真魂语言包
+internal:
+  "low-authority": 不行不行，你的权限不够呢……（？
+  "insufficient-arguments": 你给的参数不够呢。如果不知道怎么用的话，就输入“帮助 指令名”吧。
+  "redundant-arguments": 你给的参数太多了呢。如果不知道怎么用的话，就输入“帮助 指令名”吧。
+  "invalid-argument": 你给的 {0} 参数有点问题，{1}
+  "unknown-option": 额，好像没有 {0} 这个选项呢。如果不知道怎么用的话，就输入“帮助 指令名”吧。
+  "invalid-option": 你给的 {0} 选项有点问题，{1}
+  "check-syntax": 我没看懂……如果不知道怎么用的话，就输入“帮助 指令名”吧。
+  "invalid-number": 应该是个数字呢。
+  "invalid-integer": 应该是个整数呢。
+  "invalid-posint": 应该是个正整数呢。
+  "invalid-natural": 应该是个自然数呢。
+  "invalid-date": 应该是个时刻呢。
+  "invalid-user": 应该是个用户ID呢。
+  "invalid-channel": 应该是个频道ID呢。
+  "error-encountered": 诶？出错了……
+suggest:
+  "hint": 你说的是不是 {0} 啊……？
+  "command-prefix": ""
+  "command-suffix": 是的话就发个句号吧。
+  "help-prefix": 额，好像没有这个指令呢。
+  "help-suffix": 是的话就发个句号吧。
+commands:
+  "help":
+    options:
+      "help": 显示此帮助信息
+      "authority": 显示需要的权限等级
+    messages:
+      "hint-authority": 括号里是需要的权限等级
+      "hint-subcommand": 标星号的指令还有子指令
+      "command-aliases": 输入 {0} 也可以使用这个指令。
+      "command-examples": 比如你可以这样用，
+      "command-authority": 需要 {0} 极权限才能使用。
+      "subcommand-prolog": 可用的子指令有这些：{0}
+      "global-prolog": 嗯嗯，可用的指令有：{0}
+      "global-epilog": 要看某个指令的详细用法的话，就输入“帮助 指令名”吧。
+      "available-options": 可用的选项有这些：
+      "available-options-with-authority": 可用的选项有这些：（括号内是额外要求的权限等级）
+  "broadcast":
+    messages:
+      "expect-text": 额，你让我说的是什么啊……？
+  "echo":
+    description: 发送消息
+    messages:
+      "expect-text": 额，你让我说的是什么啊……？
+      "platform-not-found": 我好像没有这个平台的账户呢……
+  "user.locale":
+    description: 设置语言
+  "user.flag":
+    description: 设置标记
+  "channel.locale":
+    description: 设置语言
+  "channel.flag":
+    description: 设置标记
+  "derpi":
+    messages:
+      "hold-on": 稍等，正在获取……
+      "metadata-error": 诶……？加载图片信息的时候出问题了……
+      "image-error": 诶……？下载图片的时候出问题了……
+      "is-removed": 诶……？这张图片已经被删掉了……
+      "is-video": 呃……这是个视频哦，不可以获取……
+  "derpi.random":
+    messages:
+      "usage-shortcuts": 不想写搜索串的话，也可以直接使用这些快捷方式来调用预设的搜索串和选项哦：
+      "hold-on": 稍等，正在获取……
+      "metadata-error": 诶……？搜索图片的时候出问题了……
+      "image-error": 诶……？下载图片的时候出问题了……
+      "no-result": 呃……没有找到这样的图片呢。
+admin:
+  "user-option": 指定目标用户
+  "user-not-found": 我好像没有见过这个用户呢……
+  "user-unchanged": 不用改了，已经是这样了呢。
+  "user-updated": 嗯嗯，改好了。
+  "channel-option": 指定目标频道
+  "channel-not-found": 我好像不知道这个频道呢……
+  "channel-unchanged": 不用改了，已经是这样了呢。
+  "channel-updated": 嗯嗯，改好了。
+  "not-in-group": 额，不知道你说的是哪个频道啊……？
+  "unknown-flag": 好像没有 {0} 这个标记呢。
+  "all-flags": 标记有这些：{0}。
+  "no-flags": 一个标记都没有呢。
+  "current-flags": 当前的标记是 {0}。
+  "user-expected": 额……你要设置的用户是谁啊？
+  "invalid-assignee-platform": 啊……？机器人只能代理同一个平台上的频道哦……
+  "current-locale": 当前设置的语言是 {0}。
+  "no-locale": 当前设置的是默认语言。
+lnnbot:
+  wassup:
+    "named": "你好呀，{0}！\0怎么啦，{0}？\0有什么事吗，{0}？"
+    "neutral": "你好呀。\0怎么啦？\0那个……有什么事吗？\0嗨，我在。\0嗯嗯，在呢。"

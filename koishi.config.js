@@ -1,7 +1,9 @@
-import { App, segment } from "koishi"
-import { resolve as pathResolve } from "path"
+const { segment } = require("koishi")
+const path = require("path")
 
-type AppConfig = App.Config & { plugins: { [s: string]: any } }
+require("yaml-register").register()
+
+/** @type {import("koishi").Config & { plugins: { [s: string]: any } }} */
 module.exports = {
   port: 8080,
   nickname: ["LNNBot", "lnnbot"],
@@ -9,19 +11,22 @@ module.exports = {
   exitCommand: true,
   locale: "$souls",
   plugins: {
+    /** @type {import("@koishijs/plugin-adapter-onebot").BotConfig} */
     "adapter-onebot": {
       endpoint: "ws://localhost:6700",
       selfId: "2748080608",
-    } as import("@koishijs/plugin-adapter-onebot").BotConfig,
+    },
     "admin": {},
     "broadcast": {},
     "callme": {},
+    /** @type {import("@koishijs/plugin-database-memory/lib/storage").Config} */
     "database-memory": {
       storage: true,
-    } as import("@koishijs/plugin-database-memory/lib/storage").Config,
+    },
     "echo": {},
     "locales": {},
     "recall": {},
+    /** @type {import("@koishijs/plugin-repeater").Config} */
     "repeater": {
       onRepeat: ({ times, content }) => {
         if (times >= 3) {
@@ -29,19 +34,21 @@ module.exports = {
             if (Math.random() < 1 / (times - 2)) return content
           } else {
             return segment("image", {
-              url: `file://${pathResolve("./assets/noplusone.jpg")}`,
+              url: `file://${path.resolve("./assets/noplusone.jpg")}`,
             })
           }
         }
       },
-    } as import("@koishijs/plugin-repeater").Config,
+    },
+    /** @type {import("@koishijs/plugin-respondent").Config} */
     "respondent": [
       { match: /lnnbot\?/i, reply: "啦啦啦" },
-    ] as import("@koishijs/plugin-respondent").Config,
+    ],
     "schedule": {},
     "sudo": {},
     "switch": {},
     "teach": {},
+    /** @type {import("@koishijs/plugin-verifier").Config} */
     "verifier": {
       onFriendRequest: true,
       onGuildMemberRequest: async (session) => {
@@ -60,10 +67,11 @@ module.exports = {
         )
         return returnValue
       },
-    } as import("@koishijs/plugin-verifier").Config,
+    },
+    /** @type {import("./plugins").Config} */
     "./plugins": {
       derpi: {
       },
-    } as import("./plugins").Config,
+    },
   },
-} as AppConfig
+}
