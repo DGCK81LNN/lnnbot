@@ -68,10 +68,8 @@ module.exports = {
         return returnValue
       },
     },
-    /** @type {import("./plugins").Config} */
-    "./plugins": {
-      derpi: {
-      },
-    },
+    "./plugins/--deprecated-template-workaround": {},
+    "./plugins/derpi": {},
+    "./plugins/wassup": {},
   },
 }
