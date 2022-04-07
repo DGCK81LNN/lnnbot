@@ -83,22 +83,27 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
   const logger = ctx.logger("lnnbot-derpi")
   config = Object.assign({}, defaultConfig, config)
 
-  const lastInvokeMap = new Map<string, number>()
+  /**
+   * 记录各个频道最近一次获取图片的时间；若当前正在为该频道获取图片中，记为 `NaN`。
+   */
+  const lastInvokeTimeMap = new Map<string, number>()
 
   async function sendImage(session: Session, promise: Promise<LoadedImage>) {
-    const lastInvoke = lastInvokeMap.get(session.channelId) ?? -Infinity
-    const now = Date.now()
+    const lastInvokeTime = lastInvokeTimeMap.get(session.cid) ?? -Infinity
+    if (isNaN(lastInvokeTime)) return session.text(".too-fast")
+    lastInvokeTimeMap.set(session.cid, NaN)
+
     let holdOnHandle: NodeJS.Timeout | null = null
-    if (now - lastInvoke > config.omitHoldOnTimeout)
+    const elapsedTime = Date.now() - lastInvokeTime
+    if (elapsedTime > config.omitHoldOnTimeout)
       holdOnHandle = setTimeout(() => {
         session.send(session.text(".hold-on"))
       }, config.holdOnTime)
-    lastInvokeMap.set(session.channelId, now)
 
     let id: number
     let outPath: string
     try {
-      ({ id, outPath } = await promise)
+      ;({ id, outPath } = await promise)
     } catch (err) {
       if (err instanceof ErrorWrapper) {
         if (err.error) logger.warn(err.error)
@@ -106,9 +111,10 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
       }
       logger.error(err)
       return session.text("internal.error-encountered")
+    } finally {
+      if (holdOnHandle !== null) clearTimeout(holdOnHandle)
+      lastInvokeTimeMap.set(session.cid, Date.now())
     }
-
-    if (holdOnHandle !== null) clearTimeout(holdOnHandle)
 
     return (
       segment("image", { url: toFileURL(outPath) }) +
@@ -121,7 +127,10 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
     checkUnknown: true,
     showWarning: true,
   })
-  cmdDerpi.action(({ session }, id) => sendImage(session, loadImage(id)))
+  cmdDerpi.action(({ session }, id) => {
+    lastQueryMap.delete(session.cid)
+    return sendImage(session, loadImage(id))
+  })
 
   Argv.createDomain("derpiRating", str => {
     if ("safe".startsWith(str)) return "s"
@@ -202,6 +211,7 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
       "image-error": "加载图片失败。",
       "is-removed": "该图片已被删除。",
       "is-video": "不支持获取视频。",
+      "too-fast": "操作过于频繁，请等待上一张图片请求完成后再试。",
       "hold-on": "请稍候，正在获取……",
     },
   })
@@ -219,6 +229,7 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
       "metadata-error": "搜索图片失败。",
       "image-error": "加载图片失败。",
       "no-result": "没有找到符合条件的图片。",
+      "too-fast": "操作过于频繁，请等待上一张图片请求完成后再试。",
       "hold-on": "请稍候，正在获取……",
     },
   })
