@@ -6,11 +6,11 @@ import { toFileURL } from "../utils"
 export const name = "lnnbot-derpi"
 export interface Config {
   /** 获取图片时使用的过滤器编号，默认为 191275。 */
-  filterId?: number
+  filterId: number
   /** 收到请求后，延迟多长时间发送“请稍候”；单位为毫秒，默认为 5 秒。 */
-  holdOnTime?: number
+  holdOnTime: number
   /** 在指定时间内，同一频道内如果已经请求过图片，则不再发送“请稍候”；单位为毫秒，默认为 5 分钟。 */
-  omitHoldOnTimeout?: number
+  omitHoldOnTimeout: number
   /**
    * 定义要注册的 `derpi.random` 指令快捷方式。
    *
@@ -28,7 +28,7 @@ export interface Config {
    * ]
    * ~~~
    */
-  randomShortcuts?: {
+  randomShortcuts: {
     /** 快捷方式的名称，如需要“随机小马图”则填写 `"小马"`。可以指定多个。 */
     name: string | string[]
     /** 对应的搜索词。 */
@@ -78,7 +78,7 @@ declare module "koishi" {
   }
 }
 
-export function apply(ctx: Context, config: Config = {}) {
+export function apply(ctx: Context, config: Partial<Config> = {}) {
   const logger = ctx.logger("lnnbot-derpi")
   config = Object.assign({}, defaultConfig, config)
 

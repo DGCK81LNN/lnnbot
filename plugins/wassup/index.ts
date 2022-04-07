@@ -2,8 +2,8 @@ import { Context, Random, segment, Session } from "koishi"
 
 export const name = "lnnbot-wassup"
 export interface Config {
-  acceptPokeMsgTypes?: string[]
-  callingKeywords?: string[]
+  acceptPokeMsgTypes: string[]
+  callingKeywords: string[]
 }
 
 async function pickMessage(session: Session) {
@@ -42,7 +42,7 @@ export const defaultConfig: Config = {
   callingKeywords: ["在吗", "在线吗", "出来", "人呢"],
 }
 
-export function apply(ctx: Context, config?: Config) {
+export function apply(ctx: Context, config?: Partial<Config>) {
   config = Object.assign({}, defaultConfig, config)
 
   var pokeTimesMap = new Map<string, number>()
