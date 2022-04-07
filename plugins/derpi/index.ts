@@ -71,6 +71,7 @@ export const defaultConfig: Config = {
 export type DerpiRating = "s" | "su" | "q" | "e"
 
 declare module "koishi" {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Argv {
     interface Domain {
       derpiRating: DerpiRating
@@ -82,11 +83,11 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
   const logger = ctx.logger("lnnbot-derpi")
   config = Object.assign({}, defaultConfig, config)
 
-  var lastInvokeMap = new Map<string, number>()
+  const lastInvokeMap = new Map<string, number>()
 
   async function sendImage(session: Session, promise: Promise<LoadedImage>) {
-    let lastInvoke = lastInvokeMap.get(session.channelId) ?? -Infinity
-    let now = Date.now()
+    const lastInvoke = lastInvokeMap.get(session.channelId) ?? -Infinity
+    const now = Date.now()
     let holdOnHandle: NodeJS.Timeout | null = null
     if (now - lastInvoke > config.omitHoldOnTimeout)
       holdOnHandle = setTimeout(() => {
@@ -94,8 +95,10 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
       }, config.holdOnTime)
     lastInvokeMap.set(session.channelId, now)
 
+    let id: number
+    let outPath: string
     try {
-      var { id, outPath } = await promise
+      ({ id, outPath } = await promise)
     } catch (err) {
       if (err instanceof ErrorWrapper) {
         if (err.error) logger.warn(err.error)
@@ -143,10 +146,10 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
     .option("dark", "-g", { value: 2 })
     .option("grotesq", "-G", { fallback: false, hidden: true })
 
-  let randomShortcutsUsage = config.randomShortcuts.map(({ name, query, options }) => {
-    let nameArr: string[] = typeof name === "string" ? [name] : name
-    let namesRe = nameArr.map(n => escapeRegExp(n)).join("|")
-    let regExp = new RegExp(`^随机(?:${namesRe})图$`, "i")
+  const randomShortcutsUsage = config.randomShortcuts.map(({ name, query, options }) => {
+    const nameArr: string[] = typeof name === "string" ? [name] : name
+    const namesRe = nameArr.map(n => escapeRegExp(n)).join("|")
+    const regExp = new RegExp(`^随机(?:${namesRe})图$`, "i")
     cmdDerpiRandom.shortcut(regExp, { args: [query], options })
 
     return `随机${nameArr.join("/")}图`
@@ -162,19 +165,19 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
           : "")
     )
     .action(({ session, options: { r34, dark, grotesq } }, query) => {
-      var restrictions = ["wilson_score.gte:0.93"]
+      const restrictions = ["wilson_score.gte:0.93"]
       if (r34 || dark || grotesq) {
         switch (r34) {
           case 0:
-            restrictions.push("-suggestive")
+            restrictions.push("-suggestive") // fallthrough
           case 1:
-            restrictions.push("-questionable")
+            restrictions.push("-questionable") // fallthrough
           case 2:
             restrictions.push("-explicit")
         }
         switch (dark) {
           case 0:
-            restrictions.push("-semi-grimdark")
+            restrictions.push("-semi-grimdark") // fallthrough
           case 1:
             restrictions.push("-grimdark")
         }

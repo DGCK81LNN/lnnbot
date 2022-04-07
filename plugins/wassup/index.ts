@@ -7,15 +7,15 @@ export interface Config {
 }
 
 async function pickMessage(session: Session) {
-  var { name } = await session.observeUser(["name"])
+  const { name } = await session.observeUser(["name"])
 
-  let messages: string[] = []
+  const messages: string[] = []
   {
-    let neutralMsgs = session.text("lnnbot.wassup.neutral")
+    const neutralMsgs = session.text("lnnbot.wassup.neutral")
     if (neutralMsgs) messages.push(...neutralMsgs.split("\0"))
   }
   if (name) {
-    let namedMsgs = session.text("lnnbot.wassup.named", [name])
+    const namedMsgs = session.text("lnnbot.wassup.named", [name])
     if (namedMsgs) messages.push(...namedMsgs.split("\0"))
   }
   return Random.pick(messages)
@@ -27,13 +27,13 @@ function isWindowShake(session: Session) {
 
 const pokeMsgFormat = "[:type]请使用最新版手机QQ体验新功能。"
 function isPoke(session: Session, acceptPokeMsgTypes: string[]) {
-  let content = segment.unescape(session.content)
+  const content = segment.unescape(session.content)
   return acceptPokeMsgTypes.some(type => content === pokeMsgFormat.replace(":type", type))
 }
 
 function isCalling(session: Session, callingKeywords: string[]) {
   if (!(session.subtype === "private" || session.parsed.appel)) return false
-  var content = session.parsed.content
+  const content = session.parsed.content
   return callingKeywords.some(keyword => content.startsWith(keyword))
 }
 
@@ -45,18 +45,18 @@ export const defaultConfig: Config = {
 export function apply(ctx: Context, config?: Partial<Config>) {
   config = Object.assign({}, defaultConfig, config)
 
-  var pokeTimesMap = new Map<string, number>()
+  const pokeTimesMap = new Map<string, number>()
 
   ctx.on("notice/poke", async session => {
     if (session.guildId && session.targetId && session.targetId !== session.selfId) return
 
-    var times = (pokeTimesMap.get(session.cid) || 0) + 1
+    const times = (pokeTimesMap.get(session.cid) || 0) + 1
     pokeTimesMap.set(session.cid, times)
 
     // 戳自己目前只在群内有效
-    let pokeSelfProb = session.guildId && times > 6 ? 0.4 - 1 / (times - 3.5) : 0
-    let pokeOtherProb = times > 2 ? 0.8 - 1 / (times - 0.75) : 0
-    let rand = Math.random()
+    const pokeSelfProb = session.guildId && times > 6 ? 0.4 - 1 / (times - 3.5) : 0
+    const pokeOtherProb = times > 2 ? 0.8 - 1 / (times - 0.75) : 0
+    const rand = Math.random()
 
     if (rand < pokeSelfProb) await session.send(segment("poke", { qq: session.selfId }))
     else if (rand < pokeOtherProb) await session.send(segment("poke", { qq: session.userId }))
