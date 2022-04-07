@@ -134,14 +134,14 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
       checkUnknown: true,
       showWarning: true,
     })
-    .option("r34", "<level:number>", { fallback: 0 })
+    .option("r34", "<level:number>", { fallback: 0, hidden: true })
     .option("r34", "-s", { value: 1 })
     .option("r34", "-q", { value: 2 })
     .option("r34", "-e", { value: 3 })
-    .option("dark", "<level:number>", { fallback: 0 })
+    .option("dark", "<level:number>", { fallback: 0, hidden: true })
     .option("dark", "-S", { value: 1 })
     .option("dark", "-g", { value: 2 })
-    .option("grotesq", "-G", { fallback: false })
+    .option("grotesq", "-G", { fallback: false, hidden: true })
 
   let randomShortcutsUsage = config.randomShortcuts.map(({ name, query, options }) => {
     let nameArr: string[] = typeof name === "string" ? [name] : name
