@@ -3,7 +3,8 @@ export interface GetImageResponse {
 }
 
 export interface SearchImagesResponse {
-  images: Image<false>[]
+  images: VisibleImage[]
+  total: number
 }
 
 export type ImageMimeType =
@@ -28,16 +29,17 @@ export type ImageExtension<T extends ImageMimeType = ImageMimeType> =
     ? "mp4"
     : never
 
-interface ImageBasicInfo<H extends boolean> {
+interface ImageBasicInfo {
   created_at: string
   deletion_reason?: string
   duplicate_of?: number
   first_seen_at: string
   id: number
-  hidden_from_users: H
+  hidden_from_users: boolean
   updated_at: string
 }
-interface ImageMetadata<M extends ImageMimeType> {
+export interface VisibleImage<M extends ImageMimeType = ImageMimeType>
+  extends ImageBasicInfo {
   animated: boolean
   aspect_ratio: number
   comment_count: number
@@ -47,7 +49,8 @@ interface ImageMetadata<M extends ImageMimeType> {
   faves: number
   format: ImageExtension<M>
   height: number
-  intensities: { ne: number; nw: number; se: number; sw: number }
+  hidden_from_users: false
+  intensities?: { ne: number; nw: number; se: number; sw: number }
   mime_type: M
   name: string
   orig_sha512_hash: string
@@ -78,7 +81,7 @@ interface ImageMetadata<M extends ImageMimeType> {
   width: number
   wilson_score: number
 }
-export type Image<
-  H extends boolean = boolean,
-  M extends ImageMimeType = ImageMimeType
-> = H extends true ? ImageBasicInfo<true> : ImageBasicInfo<false> & ImageMetadata<M>
+export interface HiddenImage extends ImageBasicInfo {
+  hidden_from_users: true
+}
+export type Image = VisibleImage | HiddenImage
