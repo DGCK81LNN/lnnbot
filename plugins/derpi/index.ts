@@ -11,6 +11,8 @@ export interface Config {
   holdOnTime: number
   /** 在指定时间内，同一频道内如果已经请求过图片，则不再发送“请稍候”；单位为毫秒，默认为 5 分钟。 */
   omitHoldOnTimeout: number
+  /** 在请求了一次随机图后，请求“再来一张”的有效期。默认为 5 分钟。 */
+  anotherTimeout: number
   /**
    * 定义要注册的 `derpi.random` 指令快捷方式。
    *
@@ -57,6 +59,7 @@ export const defaultConfig: Config = {
   filterId: 191275,
   holdOnTime: 5 * Time.second,
   omitHoldOnTimeout: 5 * Time.minute,
+  anotherTimeout: 5 * Time.minute,
   randomShortcuts: [
     { name: "小马", query: "pony" },
     { name: ["暮暮", "紫悦", "TS"], query: "ts,pony,solo" },
@@ -87,6 +90,10 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
    * 记录各个频道最近一次获取图片的时间；若当前正在为该频道获取图片中，记为 `NaN`。
    */
   const lastInvokeTimeMap = new Map<string, number>()
+  /**
+   * 记录各个频道最近一次获取随机图时所用的 query；若最近一次调用不是获取随机图片，则该频道无记录。
+   */
+  const lastQueryMap = new Map<string, string>()
 
   async function sendImage(session: Session, promise: Promise<LoadedImage>) {
     const lastInvokeTime = lastInvokeTimeMap.get(session.cid) ?? -Infinity
@@ -141,7 +148,7 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
   })
 
   const cmdDerpiRandom = ctx
-    .command("derpi.random <query:string>", {
+    .command("derpi.random [query:string]", {
       checkArgCount: true,
       checkUnknown: true,
       showWarning: true,
@@ -154,6 +161,7 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
     .option("dark", "-S", { value: 1 })
     .option("dark", "-g", { value: 2 })
     .option("grotesq", "-G", { fallback: false, hidden: true })
+    .shortcut(/^(?:再来|再来一张)$/)
 
   const randomShortcutsUsage = config.randomShortcuts.map(({ name, query, options }) => {
     const nameArr: string[] = typeof name === "string" ? [name] : name
@@ -168,40 +176,44 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
     .usage(
       session =>
         `${session.text("commands.derpi.random.messages.usage")}\n` +
+        `${session.text("commands.derpi.random.messages.usage-another")}\n` +
         (randomShortcutsUsage.length
           ? `${session.text("commands.derpi.random.messages.usage-shortcuts")}\n` +
             randomShortcutsUsage.map(s => `    ${s}`).join("\n")
           : "")
     )
     .action(({ session, options: { r34, dark, grotesq } }, query) => {
-      const restrictions = ["wilson_score.gte:0.93"]
-      if (r34 || dark || grotesq) {
-        switch (r34) {
-          case 0:
-            restrictions.push("-suggestive") // fallthrough
-          case 1:
-            restrictions.push("-questionable") // fallthrough
-          case 2:
-            restrictions.push("-explicit")
+      let q: string
+      if (query) {
+        const restrictions = ["wilson_score.gte:0.93"]
+        if (r34 || dark || grotesq) {
+          switch (r34) {
+            case 0:
+              restrictions.push("-suggestive") // fallthrough
+            case 1:
+              restrictions.push("-questionable") // fallthrough
+            case 2:
+              restrictions.push("-explicit")
+          }
+          switch (dark) {
+            case 0:
+              restrictions.push("-semi-grimdark") // fallthrough
+            case 1:
+              restrictions.push("-grimdark")
+          }
+          if (!grotesq) restrictions.push("-grotesque")
+        } else {
+          restrictions.push("safe")
         }
-        switch (dark) {
-          case 0:
-            restrictions.push("-semi-grimdark") // fallthrough
-          case 1:
-            restrictions.push("-grimdark")
-        }
-        if (!grotesq) restrictions.push("-grotesque")
+        q = `(${query}),${restrictions.join(",")}`
+        lastQueryMap.set(session.cid, q)
       } else {
-        restrictions.push("safe")
+        const elapsedTime = Date.now() - (lastInvokeTimeMap.get(session.cid) ?? -Infinity)
+        if (elapsedTime > config.anotherTimeout || !lastQueryMap.has(session.cid))
+          return session.text(".require-query")
+        q = lastQueryMap.get(session.cid)
       }
-      query = `(${query}),${restrictions.join(",")}`
-      return sendImage(
-        session,
-        getRandomImage({
-          filter_id: config.filterId,
-          q: query,
-        })
-      )
+      return sendImage(session, getRandomImage({ filter_id: config.filterId, q }))
     })
 
   ctx.i18n.define("zh", "commands.derpi", {
@@ -225,7 +237,9 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
     messages: {
       "usage":
         "输入 derpi.random，后加一个 Derpibooru 搜索串，用于筛选图片。若搜索串中有空格，需给整个搜索串加引号。",
+      "usage-another": "省略搜索串或输入“再来一张”（或“再来”）可重复最近一次请求。",
       "usage-shortcuts": "也可以直接使用以下快捷方式来调用预设的搜索串和选项：",
+      "require-query": "请指定筛选图片的搜索串。",
       "metadata-error": "搜索图片失败。",
       "image-error": "加载图片失败。",
       "no-result": "没有找到符合条件的图片。",
