@@ -1,4 +1,4 @@
-import { Argv, Context, Session, Time, escapeRegExp, segment } from "koishi"
+import { Context, Session, Time, escapeRegExp, segment } from "koishi"
 import { getRandomImage, LoadedImage, loadImage } from "./api"
 import ErrorWrapper from "../error-wrapper"
 import { toFileURL } from "../utils"
@@ -71,17 +71,6 @@ export const defaultConfig: Config = {
   ],
 }
 
-export type DerpiRating = "s" | "su" | "q" | "e"
-
-declare module "koishi" {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Argv {
-    interface Domain {
-      derpiRating: DerpiRating
-    }
-  }
-}
-
 export function apply(ctx: Context, config: Partial<Config> = {}) {
   const logger = ctx.logger("lnnbot-derpi")
   config = Object.assign({}, defaultConfig, config)
@@ -137,14 +126,6 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
   cmdDerpi.action(({ session }, id) => {
     lastQueryMap.delete(session.cid)
     return sendImage(session, loadImage(id))
-  })
-
-  Argv.createDomain("derpiRating", str => {
-    if ("safe".startsWith(str)) return "s"
-    if ("suggestive".startsWith(str)) return "su"
-    if ("questionable".startsWith(str)) return "q"
-    if ("explicit".startsWith(str)) return "e"
-    throw "invalid rating"
   })
 
   const cmdDerpiRandom = ctx
