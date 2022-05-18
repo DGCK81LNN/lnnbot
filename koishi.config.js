@@ -73,6 +73,7 @@ module.exports = {
     },
     "./plugins/--deprecated-template-workaround": {},
     "./plugins/derpi": {},
+    "./plugins/tell": {},
     "./plugins/wassup": {},
   },
 }
