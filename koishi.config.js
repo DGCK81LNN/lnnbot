@@ -50,7 +50,6 @@ module.exports = {
     "schedule": {},
     "sudo": {},
     "switch": {},
-    "teach": {},
     /** @type {import("@koishijs/plugin-verifier").Config} */
     "verifier": {
       onFriendRequest: true,
@@ -71,7 +70,6 @@ module.exports = {
         return returnValue
       },
     },
-    "./plugins/--deprecated-template-workaround": {},
     "./plugins/derpi": {},
     "./plugins/tell": {},
     "./plugins/wassup": {},
