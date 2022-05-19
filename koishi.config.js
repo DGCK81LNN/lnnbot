@@ -3,7 +3,7 @@ const { toFileURL } = require("./plugins/utils")
 
 require("yaml-register").register() // XD
 
-/** @type {import("koishi").Config & { plugins: { [s: string]: any } }} */
+/** @type {import("koishi").App.Config & { plugins: { [s: string]: any } }} */
 module.exports = {
   port: 8080,
   nickname: ["LNNBot", "lnnbot"],
@@ -19,10 +19,7 @@ module.exports = {
     "admin": {},
     "broadcast": {},
     "callme": {},
-    /** @type {import("@koishijs/plugin-database-memory/lib/storage").Config} */
-    "database-memory": {
-      storage: true,
-    },
+    "database-level": {},
     "echo": {},
     "locales": {},
     "recall": {},

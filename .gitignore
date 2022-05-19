@@ -1,5 +1,4 @@
 node_modules/
-bin/
-.koishi/
+.level/
 .lnnbot_cache/
 .vscode/
