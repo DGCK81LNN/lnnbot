@@ -1,10 +1,12 @@
 import { Context, Session, Time, escapeRegExp, segment } from "koishi"
-import { getRandomImage, LoadedImage, loadImage } from "./api"
+import { getRandomImage, LoadedImage, loadImage, setBooruUrl } from "./api"
 import ErrorWrapper from "../error-wrapper"
 import { toFileURL } from "../utils"
 
 export const name = "lnnbot-derpi"
 export interface Config {
+  /** 图站的网址。默认为 `"https://derpibooru.org"`。 */
+  booruUrl: string
   /** 获取图片时使用的过滤器编号，默认为 191275。 */
   filterId: number
   /** 收到请求后，延迟多长时间发送“请稍候”；单位为毫秒，默认为 5 秒。 */
@@ -56,6 +58,7 @@ export interface Config {
 }
 
 export const defaultConfig: Config = {
+  booruUrl: "https://derpibooru.org",
   filterId: 191275,
   holdOnTime: 5 * Time.second,
   omitHoldOnTimeout: 5 * Time.minute,
@@ -74,6 +77,7 @@ export const defaultConfig: Config = {
 export function apply(ctx: Context, config: Partial<Config> = {}) {
   const logger = ctx.logger("lnnbot-derpi")
   config = Object.assign({}, defaultConfig, config)
+  setBooruUrl(config.booruUrl)
 
   /**
    * 记录各个频道最近一次获取图片的时间；若当前正在为该频道获取图片中，记为 `NaN`。
@@ -114,7 +118,7 @@ export function apply(ctx: Context, config: Partial<Config> = {}) {
 
     return (
       segment("image", { url: toFileURL(outPath) }) +
-      `\nhttps://derpibooru.org/images/${id}`
+      `\n${config.booruUrl}/images/${id}`
     )
   }
 

@@ -67,7 +67,9 @@ module.exports = {
         return returnValue
       },
     },
-    "./plugins/derpi": {},
+    "./plugins/derpi": {
+      booruUrl: "https://trixiebooru.org",
+    },
     "./plugins/tell": {},
     "./plugins/wassup": {},
   },

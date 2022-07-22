@@ -18,8 +18,14 @@ interface Options {
   sf?: string
 }
 
+let booruUrl = "https://derpibooru.org"
+
+export function setBooruUrl(url: string) {
+  booruUrl = url
+}
+
 async function apiCall<T>(path: string, params: Params) {
-  let url = `https://derpibooru.org/api/v1/json/${path}`
+  let url = `${booruUrl}/api/v1/json/${path}`
   const paramStr = new URLSearchParams(params).toString()
   if (paramStr) url += (url.includes("?") ? "&" : "?") + paramStr
   return (await axios.get<T>(url)).data
